@@ -23,9 +23,10 @@ export const Contact: React.FC = () => {
 
     try {
       // Use environment variable for API URL, fallback to localhost for development
-      const apiUrl = process.env.REACT_APP_API_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:5000' : '/api');
-      
-      const endpoint = `${apiUrl}/api/send-booking`;
+      // Use local server in dev, relative path in production (Vercel)
+      const endpoint = (typeof window !== 'undefined' && window.location.hostname === 'localhost')
+        ? 'http://localhost:5000/api/send-booking'
+        : '/api/send-booking';
       
       const response = await fetch(endpoint, {
         method: 'POST',
