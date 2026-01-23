@@ -23,7 +23,7 @@ const Header: React.FC = () => {
     if (isMenuOpen) {
       document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = '';
     }
   }, [isMenuOpen]);
 
@@ -93,7 +93,12 @@ const Header: React.FC = () => {
         <div className="absolute inset-0 bg-black/40 backdrop-blur-md" onClick={() => setIsMenuOpen(false)}></div>
         
         {/* Content Drawer - Solid Background for visibility */}
-        <nav className={`absolute right-0 top-0 h-full w-[85%] max-w-sm bg-white dark:bg-background-dark shadow-2xl transition-transform duration-500 p-8 flex flex-col gap-10 ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <nav
+  className={`absolute right-0 top-0 h-full w-full max-w-full bg-white dark:bg-background-dark shadow-2xl transition-transform duration-500 p-8 flex flex-col gap-10 overflow-x-hidden ${
+    isMenuOpen ? 'translate-x-0' : 'translate-x-full'
+  }`}
+>
+
           <div className="flex justify-between items-center pb-4 border-b border-gray-100 dark:border-gray-800">
              <div className="flex items-center gap-3">
                 <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-primary/10 text-primary">
