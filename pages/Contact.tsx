@@ -22,7 +22,12 @@ export const Contact: React.FC = () => {
     setSubmitStatus(null);
 
     try {
-      const response = await fetch('http://localhost:5000/api/send-booking', {
+      // Use environment variable for API URL, fallback to localhost for development
+      const apiUrl = process.env.REACT_APP_API_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:5000' : '/api');
+      
+      const endpoint = `${apiUrl}/api/send-booking`;
+      
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
