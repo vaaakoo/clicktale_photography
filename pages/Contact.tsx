@@ -12,15 +12,18 @@ export const Contact: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   useEffect(() => {
-    (window as any).onTurnstileSuccess = (token: string) => {
-      console.log('Turnstile token received:', token);
-      setCaptchaToken(token);
-    };
+  (window as any).onTurnstileSuccess = (token: string) => {
+    setCaptchaToken(token);
 
-    return () => {
-      delete (window as any).onTurnstileSuccess;
-    };
-  }, []);
+    // 🔑 clear previous "not a robot" error
+    setSubmitStatus(null);
+  };
+
+  return () => {
+    delete (window as any).onTurnstileSuccess;
+  };
+}, []);
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
