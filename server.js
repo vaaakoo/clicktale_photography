@@ -68,10 +68,31 @@ app.post('/api/test-booking', async (req, res) => {
   });
 });
 
+const verifyTurnstile = async (token) => {
+  const response = await fetch(
+    'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        secret: process.env.TURNSTILE_SECRET_KEY,
+        response: token,
+      }),
+    }
+  );
+
+  const data = await response.json();
+  return data.success === true;
+};
+
 // Booking endpoint
 app.post('/api/send-booking', async (req, res) => {
   const { name, email, date, message } = req.body;
+  const { captchaToken } = req.body;
 
+  if (!captchaToken) {
+    return res.status(400).json({ error: 'Captcha missing' });
+  }
   if (!name || !email || !date || !message) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
@@ -267,6 +288,12 @@ app.post('/api/send-booking', async (req, res) => {
         </html>
       `,
     };
+
+    const isHuman = await verifyTurnstile(captchaToken);
+
+    if (!isHuman) {
+      return res.status(403).json({ error: 'Captcha verification failed' });
+    }
 
     console.log('Sending admin email to:', adminMailOptions.to);
     // Send both emails

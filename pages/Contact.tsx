@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -8,19 +8,41 @@ export const Contact: React.FC = () => {
     date: '',
     message: '',
   });
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  useEffect(() => {
+    (window as any).onTurnstileSuccess = (token: string) => {
+      console.log('Turnstile token received:', token);
+      setCaptchaToken(token);
+    };
+
+    return () => {
+      delete (window as any).onTurnstileSuccess;
+    };
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  
+
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitStatus(null);
 
+    if (!captchaToken) {
+      setSubmitStatus({
+        type: 'error',
+        message: 'Please confirm you are not a robot.',
+      });
+      setIsSubmitting(false);
+      return;
+    }
     try {
       // Use environment variable for API URL, fallback to localhost for development
       // Use local server in dev, relative path in production (Vercel)
@@ -31,7 +53,7 @@ export const Contact: React.FC = () => {
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, captchaToken }),
       });
 
       const data = await response.json();
@@ -48,7 +70,7 @@ export const Contact: React.FC = () => {
       setIsSubmitting(false);
     }
   };
-
+  
   return (
     <div className="min-h-screen py-16 px-6 md:px-10 flex items-center justify-center relative overflow-hidden">
       <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-50 to-transparent dark:from-blue-900/10 -z-10"></div>
@@ -173,6 +195,13 @@ export const Contact: React.FC = () => {
                 placeholder="Tell me what you are looking for..."
               />
             </div>
+            <div
+              className="cf-turnstile"
+              data-sitekey="0x4AAAAAACQkiCrOWu32m6v-"
+              data-callback="onTurnstileSuccess"
+              data-theme="light"
+            ></div>
+
             <button 
               type="submit"
               disabled={isSubmitting}
