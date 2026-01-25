@@ -198,6 +198,15 @@ export const Contact: React.FC = () => {
                 placeholder="Tell me what you are looking for..."
               />
             </div>
+            {!captchaToken && (
+                <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                  </svg>
+                  Security check in progress
+                </div>
+              )}
+
             <div
               className="cf-turnstile"
               data-sitekey="0x4AAAAAACQkiCrOWu32m6v-"
@@ -207,7 +216,7 @@ export const Contact: React.FC = () => {
 
             <button 
               type="submit"
-              disabled={isSubmitting}
+                disabled={isSubmitting || !captchaToken}
               className="h-14 w-full bg-primary text-white font-bold rounded-xl shadow-lg hover:bg-blue-600 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? 'Sending...' : 'Send Message'} <span className="material-symbols-outlined text-sm">send</span>
