@@ -11,18 +11,43 @@ export const Contact: React.FC = () => {
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const resetTurnstile = () => {
+    setCaptchaToken(null);
+    if (typeof window !== 'undefined' && (window as any).turnstile?.reset) {
+      (window as any).turnstile.reset();
+    }
+  };
+
   useEffect(() => {
-  (window as any).onTurnstileSuccess = (token: string) => {
-    setCaptchaToken(token);
+    (window as any).onTurnstileSuccess = (token: string) => {
+      setCaptchaToken(token);
 
-    // 🔑 clear previous "not a robot" error
-    setSubmitStatus(null);
-  };
+      // 🔑 clear previous "not a robot" error
+      setSubmitStatus(null);
+    };
 
-  return () => {
-    delete (window as any).onTurnstileSuccess;
-  };
-}, []);
+    (window as any).onTurnstileExpired = () => {
+      resetTurnstile();
+      setSubmitStatus({
+        type: 'error',
+        message: 'Security check expired. Please try again.',
+      });
+    };
+
+    (window as any).onTurnstileError = () => {
+      resetTurnstile();
+      setSubmitStatus({
+        type: 'error',
+        message: 'Security check failed. Please refresh and try again.',
+      });
+    };
+
+    return () => {
+      delete (window as any).onTurnstileSuccess;
+      delete (window as any).onTurnstileExpired;
+      delete (window as any).onTurnstileError;
+    };
+  }, []);
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -64,11 +89,16 @@ export const Contact: React.FC = () => {
       if (response.ok) {
         setSubmitStatus({ type: 'success', message: 'Booking request sent! Check your email for confirmation.' });
         setFormData({ name: '', email: '', date: '', message: '' });
+        resetTurnstile();
       } else {
         setSubmitStatus({ type: 'error', message: data.error || 'Failed to send booking. Please try again.' });
+        if (data?.error?.toLowerCase?.().includes('captcha')) {
+          resetTurnstile();
+        }
       }
     } catch (error) {
       setSubmitStatus({ type: 'error', message: 'Network error. Please check if the server is running.' });
+      resetTurnstile();
     } finally {
       setIsSubmitting(false);
     }
@@ -211,6 +241,8 @@ export const Contact: React.FC = () => {
               className="cf-turnstile"
               data-sitekey="0x4AAAAAACQkiCrOWu32m6v-"
               data-callback="onTurnstileSuccess"
+              data-expired-callback="onTurnstileExpired"
+              data-error-callback="onTurnstileError"
               data-theme="light"
             ></div>
 
