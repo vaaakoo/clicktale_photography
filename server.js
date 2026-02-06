@@ -14,9 +14,11 @@ app.use(cors());
 app.use(express.json());
 
 // Verify environment variables are loaded
-console.log('EMAIL_USER loaded:', process.env.EMAIL_USER ? '✓' : '✗');
-console.log('EMAIL_PASSWORD loaded:', process.env.EMAIL_PASSWORD ? '✓' : '✗');
-console.log('RECAPTCHA_SECRET_KEY loaded:', process.env.RECAPTCHA_SECRET_KEY ? '✓' : '✗');
+if (process.env.NODE_ENV !== 'production') {
+  console.log('EMAIL_USER loaded:', process.env.EMAIL_USER ? '✓' : '✗');
+  console.log('EMAIL_PASSWORD loaded:', process.env.EMAIL_PASSWORD ? '✓' : '✗');
+  console.log('RECAPTCHA_SECRET_KEY loaded:', process.env.RECAPTCHA_SECRET_KEY ? '✓' : '✗');
+}
 
 // Health check endpoint
 app.get('/', (req, res) => {
@@ -70,26 +72,48 @@ app.post('/api/test-booking', async (req, res) => {
   });
 });
 
-const verifyRecaptcha = async (token) => {
+const verifyRecaptcha = async (token, remoteIp = null) => {
   if (!process.env.RECAPTCHA_SECRET_KEY) {
-    console.error('❌ Missing RECAPTCHA_SECRET_KEY');
-    return false;
+    console.error('Missing RECAPTCHA_SECRET_KEY in environment');
+    return { success: false, errorCodes: ['missing-input-secret'], hostname: null };
   }
 
-  const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
+  if (!token) {
+    return { success: false, errorCodes: ['missing-input-response'], hostname: null };
+  }
+
+  try {
+    const params = new URLSearchParams({
       secret: process.env.RECAPTCHA_SECRET_KEY,
       response: token,
-    }),
-  });
+    });
 
-  const data = await response.json();
-  if (!data.success) {
-    console.error('❌ reCAPTCHA verification failed:', data['error-codes']);
+    if (remoteIp) {
+      params.append('remoteip', remoteIp);
+    }
+
+    const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params,
+    });
+
+    const data = await response.json();
+    
+    if (!data.success) {
+      console.error('reCAPTCHA verification failed:', data['error-codes']);
+    }
+
+    return {
+      success: data.success === true,
+      errorCodes: data['error-codes'] || [],
+      hostname: data.hostname,
+      challengeTs: data.challenge_ts
+    };
+  } catch (error) {
+    console.error('reCAPTCHA verification error:', error.message);
+    return { success: false, errorCodes: ['verification-error'], hostname: null };
   }
-  return { success: data.success === true, errorCodes: data['error-codes'] ?? [] };
 };
 
 // Booking endpoint
@@ -296,22 +320,19 @@ app.post('/api/send-booking', async (req, res) => {
       `,
     };
 
-    const isHuman = await verifyRecaptcha(captchaToken);
+    const recaptchaResult = await verifyRecaptcha(captchaToken, req.ip);
 
     if (!recaptchaResult.success) {
       return res.status(403).json({
         error: 'Captcha verification failed',
-        errorCodes: recaptchaResult.errorCodes,
+        details: recaptchaResult.errorCodes,
+        message: 'Please complete the security check and try again.'
       });
     }
 
-    console.log('Sending admin email to:', adminMailOptions.to);
     // Send both emails
     await transporter.sendMail(adminMailOptions);
-    console.log('Admin email sent successfully');
-    
     await transporter.sendMail(clientMailOptions);
-    console.log('Client email sent successfully');
 
     res.json({ success: true, message: 'Booking request sent successfully!' });
   } catch (error) {

@@ -14,6 +14,7 @@ export const Contact: React.FC = () => {
   const recaptchaSiteKey = (import.meta as any).env?.VITE_RECAPTCHA_SITE_KEY ?? '';
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  
   const resetRecaptcha = () => {
     setCaptchaToken(null);
     if (typeof window !== 'undefined' && (window as any).grecaptcha?.reset && recaptchaWidgetId.current !== null) {
@@ -81,22 +82,18 @@ export const Contact: React.FC = () => {
     setIsSubmitting(true);
     setSubmitStatus(null);
 
-    if (!recaptchaSiteKey) {
+    // Check if reCAPTCHA is configured
+    const isRecaptchaConfigured = Boolean(recaptchaSiteKey);
+    
+    if (isRecaptchaConfigured && !captchaToken) {
       setSubmitStatus({
         type: 'error',
-        message: 'Security check unavailable. Please contact support.',
+        message: 'Please complete the security check (reCAPTCHA).',
       });
       setIsSubmitting(false);
       return;
     }
-    if (!captchaToken) {
-      setSubmitStatus({
-        type: 'error',
-        message: 'Please confirm you are not a robot.',
-      });
-      setIsSubmitting(false);
-      return;
-    }
+
     try {
       // Use environment variable for API URL, fallback to localhost for development
       // Use local server in dev, relative path in production (Vercel)
@@ -107,7 +104,7 @@ export const Contact: React.FC = () => {
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, captchaToken }),
+        body: JSON.stringify({ ...formData, captchaToken: captchaToken || '' }),
       });
 
       const data = await response.json();
@@ -117,7 +114,10 @@ export const Contact: React.FC = () => {
         setFormData({ name: '', email: '', date: '', message: '' });
         resetRecaptcha();
       } else {
-        setSubmitStatus({ type: 'error', message: data.error || 'Failed to send booking. Please try again.' });
+        setSubmitStatus({ 
+          type: 'error', 
+          message: data.message || data.error || 'Failed to send booking. Please try again.' 
+        });
         if (data?.error?.toLowerCase?.().includes('captcha')) {
           resetRecaptcha();
         }
@@ -254,29 +254,29 @@ export const Contact: React.FC = () => {
                 placeholder="Tell me what you are looking for..."
               />
             </div>
-            {!recaptchaSiteKey && (
-              <div className="flex items-center gap-2 text-xs text-red-500">
-                Security check unavailable. Please contact support.
-              </div>
-            )}
-            {!captchaToken && recaptchaSiteKey && (
-                <div className="flex items-center gap-2 text-xs text-gray-500">
+            {recaptchaSiteKey && !captchaToken && (
+                <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
                   <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                   </svg>
-                  Security check in progress
+                  Security check loading...
                 </div>
               )}
 
-            <div ref={recaptchaContainerRef}></div>
+            <div ref={recaptchaContainerRef} className="flex justify-center"></div>
 
             <button 
               type="submit"
-                disabled={isSubmitting || !captchaToken}
+                disabled={isSubmitting || (recaptchaSiteKey && !captchaToken)}
               className="h-14 w-full bg-primary text-white font-bold rounded-xl shadow-lg hover:bg-blue-600 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? 'Sending...' : 'Send Message'} <span className="material-symbols-outlined text-sm">send</span>
             </button>
+            {recaptchaSiteKey && !captchaToken && (
+              <p className="text-xs text-center text-gray-500 dark:text-gray-400">
+                Please complete the security check above to send your message
+              </p>
+            )}
           </form>
         </div>
       </div>
