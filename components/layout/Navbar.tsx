@@ -99,9 +99,11 @@ export const Navbar: React.FC = () => {
   return (
     <header
       className={`fixed top-0 z-50 w-full transition-all duration-300 ${
-        isScrolled || isMenuOpen
+        isMenuOpen
           ? 'bg-white/95 dark:bg-[#0e1622]/95 shadow-lg shadow-black/5 backdrop-blur-xl border-b border-white/20 dark:border-white/5'
-          : 'bg-transparent border-b border-transparent'
+          : isScrolled
+            ? 'bg-white/95 dark:bg-[#0e1622]/95 shadow-lg shadow-black/5 backdrop-blur-xl border-b border-white/20 dark:border-white/5'
+            : 'bg-transparent border-b border-transparent'
       }`}
     >
       <div className="mx-auto flex h-20 max-w-[1400px] items-center justify-between px-6 md:px-10">
