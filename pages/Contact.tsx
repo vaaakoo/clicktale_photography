@@ -11,9 +11,7 @@ export const Contact: React.FC = () => {
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const recaptchaContainerRef = useRef<HTMLDivElement | null>(null);
   const recaptchaWidgetId = useRef<number | null>(null);
-  const resolvedRecaptchaSiteKey = (import.meta as any).env?.VITE_RECAPTCHA_SITE_KEY
-    ?? (import.meta as any).env?.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
-    ?? '';
+  const recaptchaSiteKey = (import.meta as any).env?.VITE_RECAPTCHA_SITE_KEY ?? '';
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const resetRecaptcha = () => {
@@ -24,7 +22,7 @@ export const Contact: React.FC = () => {
   };
 
   const renderRecaptcha = () => {
-    if (!recaptchaContainerRef.current || !resolvedRecaptchaSiteKey) {
+    if (!recaptchaContainerRef.current || !recaptchaSiteKey) {
       return;
     }
     if (typeof window === 'undefined' || !(window as any).grecaptcha?.render) {
@@ -36,7 +34,7 @@ export const Contact: React.FC = () => {
     }
 
     recaptchaWidgetId.current = (window as any).grecaptcha.render(recaptchaContainerRef.current, {
-      sitekey: resolvedRecaptchaSiteKey,
+      sitekey: recaptchaSiteKey,
       callback: (token: string) => {
         setCaptchaToken(token);
         setSubmitStatus(null);
@@ -67,7 +65,7 @@ export const Contact: React.FC = () => {
     return () => {
       delete (window as any).onRecaptchaLoad;
     };
-  }, [resolvedRecaptchaSiteKey]);
+  }, [recaptchaSiteKey]);
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -83,7 +81,7 @@ export const Contact: React.FC = () => {
     setIsSubmitting(true);
     setSubmitStatus(null);
 
-    if (!resolvedRecaptchaSiteKey) {
+    if (!recaptchaSiteKey) {
       setSubmitStatus({
         type: 'error',
         message: 'Security check unavailable. Please contact support.',
@@ -256,12 +254,12 @@ export const Contact: React.FC = () => {
                 placeholder="Tell me what you are looking for..."
               />
             </div>
-            {!resolvedRecaptchaSiteKey && (
+            {!recaptchaSiteKey && (
               <div className="flex items-center gap-2 text-xs text-red-500">
                 Security check unavailable. Please contact support.
               </div>
             )}
-            {!captchaToken && resolvedRecaptchaSiteKey && (
+            {!captchaToken && recaptchaSiteKey && (
                 <div className="flex items-center gap-2 text-xs text-gray-500">
                   <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
