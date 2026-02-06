@@ -1,0 +1,263 @@
+{
+  "meta": {
+    "title": "ClickTale | Professional Photography by Lina"
+  },
+  "brand": {
+    "click": "Click",
+    "tale": "Tale"
+  },
+  "nav": {
+    "home": "Home",
+    "portfolio": "Portfolio",
+    "about": "About Lina",
+    "booking": "Booking",
+    "bookSession": "Book Session",
+    "bookSessionLong": "Book a Session",
+    "toggleMenu": "Toggle menu",
+    "toggleTheme": "Toggle dark mode",
+    "mobileNavigation": "Mobile navigation",
+    "navigation": "Navigation",
+    "closeMenu": "Close menu",
+    "languageEnglish": "Switch to English",
+    "languageGreek": "Switch to Greek",
+    "shortEnglish": "EN",
+    "shortGreek": "GR"
+  },
+  "footer": {
+    "description": "Preserving your Mediterranean memories through high-end professional photography. Based in Oia, serving the entire island of Santorini.",
+    "explore": "Explore",
+    "connect": "Connect",
+    "follow": "Follow",
+    "address": "Oia Village, 84702",
+    "phone": "+30 22860 12345",
+    "followInstagram": "Follow on Instagram",
+    "sendEmail": "Send email",
+    "copyright": "© 2024 ClickTale. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+  "ai": {
+    "greeting": "Hi there! I'm your ClickTale assistant. Looking for the perfect photo spot or need help planning your session route?",
+    "title": "ClickTale AI Guide",
+    "status": "Online",
+    "placeholder": "Ask about photo spots...",
+    "send": "Send message",
+    "open": "Open assistant",
+    "close": "Close assistant",
+    "errorFallback": "Sorry, I couldn't generate an itinerary right now. Please try again later.",
+    "errorConnection": "Error generating plan. Please ensure you have a valid API connection."
+  },
+  "sessionTypes": {
+    "couples": "Couples",
+    "family": "Family",
+    "lifestyle": "Lifestyle",
+    "restaurants": "Restaurants"
+  },
+  "services": {
+    "couples": {
+      "title": "Couples",
+      "description": "Romantic sessions amidst blue domes and caldera sunsets."
+    },
+    "family": {
+      "title": "Family",
+      "description": "Fun, candid memories for the whole group to cherish."
+    },
+    "lifestyle": {
+      "title": "Lifestyle",
+      "description": "Solo travel and influencer content creation."
+    },
+    "restaurants": {
+      "title": "Restaurants",
+      "description": "Culinary and architectural photography for businesses."
+    }
+  },
+  "portfolio": {
+    "title": "Capturing Love & Life",
+    "description": "Browse my portfolio of moments captured across the island. From intimate sunsets in Oia to vibrant family memories.",
+    "filters": {
+      "all": "All"
+    },
+    "loadMore": "Load More",
+    "items": {
+      "sunset": {
+        "title": "Sunset in Oia",
+        "description": "Golden hour romance."
+      },
+      "blueDomes": {
+        "title": "Classic Blue Domes",
+        "description": "Iconic Santorini architecture."
+      },
+      "alleys": {
+        "title": "Wandering the Alleys",
+        "description": "Candid exploration."
+      },
+      "culinary": {
+        "title": "Culinary Delights",
+        "description": "Authentic Greek cuisine."
+      },
+      "wedding": {
+        "title": "Wedding Bliss",
+        "description": "A special day at the edge."
+      },
+      "family": {
+        "title": "Family Moments",
+        "description": "Smiles in the sun."
+      }
+    }
+  },
+  "home": {
+    "hero": {
+      "location": "Santorini, Greece",
+      "titlePrefix": "Capture the",
+      "titleHighlight": "Eternal",
+      "titleSuffix": "Light",
+      "subtitle": "High-end professional photography for those who want to turn their Greek island memories into gallery-grade art.",
+      "ctaPrimary": "Book Session",
+      "ctaSecondary": "Gallery"
+    },
+    "intro": {
+      "eyebrow": "Professional Excellence",
+      "name": "Lina",
+      "description": "Santorini isn't just a destination for me; it's a living canvas. For 10 years, I've mastered the specific interplay of white architecture and volcanic shadows. My mission is simple: to make your legacy look beautiful.",
+      "yearsLabel": "Years Experience",
+      "storiesLabel": "Stories Told"
+    },
+    "gallery": {
+      "eyebrow": "Our Gallery",
+      "title": "Captured",
+      "titleHighlight": "Elegance",
+      "cta": "See All Work",
+      "featuredAlt": "Featured work",
+      "highlightAlt": "Highlight"
+    },
+    "services": {
+      "title": "Curated Experiences",
+      "subtitle": "Precision, passion, and perfection in every genre of imagery.",
+      "cta": "View Gallery"
+    },
+    "faq": {
+      "eyebrow": "Got Questions?",
+      "title": "Details Matter",
+      "subtitle": "Everything you need to know about your high-end experience."
+    },
+    "portraitAlt": "Lina photographer"
+  },
+  "faq": {
+    "turnaround": {
+      "question": "What is your turnaround time?",
+      "answer": "For most sessions, you will receive your edited high-resolution gallery within 7-10 days. We also offer a \"sneak peek\" service where you get 5 photos within 24 hours."
+    },
+    "bestTime": {
+      "question": "What is the best time for photos?",
+      "answer": "Sunrise and Sunset are the most magical. Sunrise offers cooler temperatures and fewer crowds, while Sunset provides the famous golden glow over the caldera."
+    },
+    "wardrobe": {
+      "question": "Do you provide wardrobe advice?",
+      "answer": "Absolutely! Once you book, we send over a style guide that includes color palette recommendations and fabric choices that look best against the white architecture."
+    },
+    "booking": {
+      "question": "How do I book a session?",
+      "answer": "You can book directly through our website by clicking the \"Book Now\" button. We require a 25% deposit to secure your date."
+    }
+  },
+  "about": {
+    "heroTitle": "Hello, I'm Lina.",
+    "heroLead": "I am a visual storyteller based in the heart of Santorini. My passion is capturing the raw, unscripted moments of love against the backdrop of our endless blue skies.",
+    "heroBody": "For over 5 years, I've had the privilege of documenting love stories from all over the world. Whether it's a secret proposal at sunset or an intimate elopement, my goal is to make you feel completely at ease.",
+    "ctaPrimary": "Contact Me",
+    "ctaSecondary": "View Portfolio",
+    "stats": {
+      "years": "Years Experience",
+      "couples": "Couples Photographed",
+      "languages": "Languages Spoken",
+      "yearsValue": "5+",
+      "couplesValue": "200+",
+      "languagesValue": "EN & GR"
+    },
+    "wideLabel": "Santorini, Greece",
+    "approachTitle": "My Approach",
+    "approach": {
+      "light": {
+        "title": "Natural Light",
+        "description": "I utilize the famous golden Greek sun to create warm, ethereal images that glow with authenticity."
+      },
+      "candid": {
+        "title": "Candid Moments",
+        "description": "The best photos happen in between poses. I capture fleeting glances and genuine laughter."
+      },
+      "stressFree": {
+        "title": "Stress-Free",
+        "description": "I guide you gently through the session, ensuring you feel relaxed, confident, and beautiful."
+      }
+    },
+    "reviewsTitle": "Client Reviews",
+    "reviewsSubtitle": "What my clients are saying",
+    "reviews": {
+      "sarah": {
+        "name": "Sarah & James",
+        "location": "New York, USA",
+        "review": "Lina made us feel so comfortable from the very first moment. The photos are absolutely stunning and capture the magic of our honeymoon perfectly."
+      },
+      "elena": {
+        "name": "Elena & Marco",
+        "location": "Milan, Italy",
+        "review": "The best decision we made was choosing Lina for our engagement shoot. Her creativity and attention to detail is unmatched. We love every single photo!"
+      },
+      "jessica": {
+        "name": "Jessica Chen",
+        "location": "Sydney, Australia",
+        "review": "Incredible photographer! She captured my solo adventure in Santorini perfectly. The images tell the story of my journey beautifully."
+      },
+      "michael": {
+        "name": "Michael & Lisa",
+        "location": "London, UK",
+        "review": "From the initial consultation to the final photos, everything was seamless. Lina is professional, creative, and genuinely cares about her clients."
+      },
+      "sophia": {
+        "name": "Sophia Rodriguez",
+        "location": "Barcelona, Spain",
+        "review": "This session exceeded all my expectations. The photos are not just beautiful—they capture the essence of who I am. Highly recommended!"
+      },
+      "david": {
+        "name": "David & Rachel",
+        "location": "Toronto, Canada",
+        "review": "Worth every penny! Lina went above and beyond to make our vow renewal special. The golden hour shots are absolutely breathtaking."
+      }
+    },
+    "portraitAlt": "Lina portrait",
+    "calderaAlt": "Santorini caldera"
+  },
+  "contact": {
+    "title": "Let's Capture Your Story",
+    "titleHighlight": "Your Story",
+    "lead": "Based in Oia, capturing love stories worldwide. Whether it's an engagement, wedding, or solo adventure, reach out to plan your dream session.",
+    "emailLabel": "Email",
+    "emailValue": "hello@santoriniphoto.com",
+    "phoneLabel": "Phone",
+    "phoneValue": "+30 22860 12345",
+    "studioLabel": "Studio",
+    "studioValue": "Oia, Santorini, Greece",
+    "followTitle": "Follow My Journey",
+    "socialInstagram": "Instagram",
+    "socialVideo": "Video",
+    "messageTitle": "Send a Message",
+    "messageSubtitle": "I typically respond within 24 hours.",
+    "statusSuccess": "Booking request sent! Check your email for confirmation.",
+    "statusSecurityExpired": "Security check expired. Please try again.",
+    "statusSecurityFailed": "Security check failed. Please refresh and try again.",
+    "statusCaptchaRequired": "Please complete the security check (reCAPTCHA).",
+    "statusBookingFailed": "Failed to send booking. Please try again.",
+    "statusNetworkError": "Network error. Please check if the server is running.",
+    "fieldName": "Your Name",
+    "fieldEmail": "Email",
+    "fieldDate": "Preferred Date",
+    "fieldMessage": "Tell me about your vision",
+    "placeholderName": "e.g. Elena & Marco",
+    "placeholderEmail": "name@example.com",
+    "placeholderMessage": "Tell me what you are looking for...",
+    "securityLoading": "Security check loading...",
+    "securityPrompt": "Please complete the security check above to send your message",
+    "sending": "Sending...",
+    "sendMessage": "Send Message"
+  }
+}
