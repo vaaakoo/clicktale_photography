@@ -73,7 +73,7 @@ app.post('/api/test-booking', async (req, res) => {
 const verifyRecaptcha = async (token) => {
   if (!process.env.RECAPTCHA_SECRET_KEY) {
     console.error('❌ Missing RECAPTCHA_SECRET_KEY');
-    return { success: false, errorCodes: ['missing-secret'] };
+    return false;
   }
 
   const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
@@ -296,7 +296,7 @@ app.post('/api/send-booking', async (req, res) => {
       `,
     };
 
-    const recaptchaResult = await verifyRecaptcha(captchaToken);
+    const isHuman = await verifyRecaptcha(captchaToken);
 
     if (!recaptchaResult.success) {
       return res.status(403).json({
