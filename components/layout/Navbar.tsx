@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from '../ui/LanguageSwitcher';
@@ -11,6 +11,8 @@ export const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
   const { t } = useTranslation();
+  const menuRef = useRef<HTMLElement | null>(null);
+  const previouslyFocusedElement = useRef<HTMLElement | null>(null);
 
   const navLinks = useMemo(
     () => [
@@ -27,7 +29,7 @@ export const Navbar: React.FC = () => {
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     handleScroll();
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -36,12 +38,67 @@ export const Navbar: React.FC = () => {
   }, [location.pathname]);
 
   useEffect(() => {
-    document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+    const body = document.body;
+    if (isMenuOpen) {
+      // Lock scroll to prevent double scroll (body + menu).
+      previouslyFocusedElement.current = document.activeElement as HTMLElement | null;
+      body.style.overflow = 'hidden';
+      body.style.touchAction = 'none';
+      requestAnimationFrame(() => {
+        const focusable = menuRef.current?.querySelector<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        focusable?.focus();
+      });
+    } else {
+      body.style.overflow = '';
+      body.style.touchAction = '';
+      previouslyFocusedElement.current?.focus();
+    }
+  }, [isMenuOpen]);
+
+  useEffect(() => {
+    if (!isMenuOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setIsMenuOpen(false);
+        return;
+      }
+
+      if (event.key !== 'Tab') {
+        return;
+      }
+
+      // Trap focus within the open mobile menu.
+      const focusableElements = menuRef.current?.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusableElements || focusableElements.length === 0) {
+        return;
+      }
+
+      const first = focusableElements[0];
+      const last = focusableElements[focusableElements.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isMenuOpen]);
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
+      className={`fixed top-0 z-50 w-full transition-all duration-300 ${
         isScrolled || isMenuOpen
           ? 'bg-white/95 dark:bg-[#0e1622]/95 shadow-lg shadow-black/5 backdrop-blur-xl border-b border-white/20 dark:border-white/5'
           : 'bg-transparent border-b border-transparent'
@@ -113,7 +170,8 @@ export const Navbar: React.FC = () => {
 
         <nav
           id="mobile-nav"
-          className={`absolute right-0 top-0 flex h-full w-full max-w-full flex-col gap-10 overflow-x-hidden bg-white dark:bg-[#0e1622] p-8 shadow-2xl transition-transform duration-500 ${
+          ref={menuRef}
+          className={`absolute right-0 top-0 flex h-full w-full max-w-full flex-col gap-10 bg-white dark:bg-[#0e1622] p-8 shadow-2xl transition-transform duration-500 ${
             isMenuOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
           aria-label={t('nav.mobileNavigation')}
