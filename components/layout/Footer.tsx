@@ -33,6 +33,20 @@ export const Footer: React.FC = () => {
               <span className="text-[#617289] dark:text-gray-400">{t('footer.address')}</span>
               <span className="text-[#617289] dark:text-gray-400">{t('footer.phone')}</span>
             </div>
+            <div className="flex flex-col gap-4 min-w-[220px]">
+              <h4 className="text-[#111418] dark:text-white font-bold text-sm uppercase tracking-widest">{t('footer.studioLabel')}</h4>
+              <span className="text-[#617289] dark:text-gray-400">{t('footer.address')}</span>
+              <div className="overflow-hidden rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
+                <iframe
+                  title={t('footer.mapTitle')}
+                  aria-label={t('footer.mapTitle')}
+                  className="h-32 w-full"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  src="https://www.google.com/maps?q=Oia%20Santorini%20Greece&output=embed"
+                />
+              </div>
+            </div>
             <div className="flex flex-col gap-4">
               <h4 className="text-[#111418] dark:text-white font-bold text-sm uppercase tracking-widest">{t('footer.follow')}</h4>
               <div className="flex gap-4">

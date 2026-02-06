@@ -104,19 +104,30 @@ export const About: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {reviews.map((review, idx) => (
-              <div key={idx} className="p-8 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 hover:shadow-lg transition-shadow flex flex-col gap-4">
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i} className="text-yellow-400 text-xl">★</span>
-                  ))}
+              <div key={idx} className="group rounded-[2rem] border border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-800/80 p-8 shadow-sm hover:shadow-xl transition-all">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i} className="text-yellow-400 text-xl">★</span>
+                    ))}
+                  </div>
+                  <div className="h-10 w-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
+                    <span className="material-symbols-outlined !text-xl">format_quote</span>
+                  </div>
                 </div>
 
-                <p className="text-[#617289] dark:text-slate-300 leading-relaxed flex-1">
-                  "{t(`about.reviews.${review.key}.review`)}"
+                <p className="mt-6 text-[#617289] dark:text-slate-300 leading-relaxed flex-1 text-lg">
+                  “{t(`about.reviews.${review.key}.review`)}”
                 </p>
 
-                <div className="flex items-center gap-3 pt-4 border-t border-gray-100 dark:border-slate-700">
-                  <img src={review.img} alt={t(`about.reviews.${review.key}.name`)} className="w-12 h-12 rounded-full object-cover" />
+                <div className="mt-8 flex items-center gap-4 pt-6 border-t border-gray-100 dark:border-slate-700">
+                  <div className="p-0.5 rounded-full bg-gradient-to-br from-primary/40 to-transparent">
+                    <img
+                      src={review.img}
+                      alt={t(`about.reviews.${review.key}.name`)}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                  </div>
                   <div>
                     <p className="font-bold text-sm text-[#111418] dark:text-white">{t(`about.reviews.${review.key}.name`)}</p>
                     <p className="text-xs text-[#617289] dark:text-slate-400">{t(`about.reviews.${review.key}.location`)}</p>
