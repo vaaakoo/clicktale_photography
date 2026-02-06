@@ -1,27 +1,26 @@
-
 export enum SessionType {
-  COUPLES = 'Couples',
-  FAMILY = 'Family',
-  LIFESTYLE = 'Lifestyle',
-  RESTAURANTS = 'Restaurants'
+  COUPLES = 'couples',
+  FAMILY = 'family',
+  LIFESTYLE = 'lifestyle',
+  RESTAURANTS = 'restaurants'
 }
 
 export interface PortfolioItem {
   id: string;
-  title: string;
+  titleKey: string;
   category: SessionType;
   imageUrl: string;
-  description: string;
+  descriptionKey: string;
 }
 
 export interface FAQItem {
-  question: string;
-  answer: string;
+  questionKey: string;
+  answerKey: string;
 }
 
 export interface ServiceItem {
   id: string;
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
   imageUrl: string;
 }
