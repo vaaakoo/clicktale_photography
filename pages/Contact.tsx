@@ -14,6 +14,7 @@ export const Contact: React.FC = () => {
   const recaptchaSiteKey = (import.meta as any).env?.VITE_RECAPTCHA_SITE_KEY
     ?? (import.meta as any).env?.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
     ?? '';
+  const recaptchaSiteKey = (import.meta as any).env?.VITE_RECAPTCHA_SITE_KEY ?? '';
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const resetRecaptcha = () => {
