@@ -68,18 +68,20 @@ app.post('/api/test-booking', async (req, res) => {
   });
 });
 
-const verifyTurnstile = async (token) => {
-  const response = await fetch(
-    'https://challenges.cloudflare.com/turnstile/v0/siteverify',
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        secret: process.env.TURNSTILE_SECRET_KEY,
-        response: token,
-      }),
-    }
-  );
+const verifyRecaptcha = async (token) => {
+  if (!process.env.RECAPTCHA_SECRET_KEY) {
+    console.error('❌ Missing RECAPTCHA_SECRET_KEY');
+    return false;
+  }
+
+  const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      secret: process.env.RECAPTCHA_SECRET_KEY,
+      response: token,
+    }),
+  });
 
   const data = await response.json();
   return data.success === true;
@@ -289,7 +291,7 @@ app.post('/api/send-booking', async (req, res) => {
       `,
     };
 
-    const isHuman = await verifyTurnstile(captchaToken);
+    const isHuman = await verifyRecaptcha(captchaToken);
 
     if (!isHuman) {
       return res.status(403).json({ error: 'Captcha verification failed' });
