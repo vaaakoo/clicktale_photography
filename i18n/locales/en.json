@@ -39,10 +39,10 @@
     "terms": "Terms of Service"
   },
   "ai": {
-    "greeting": "Hi there! I'm your ClickTale assistant. Looking for the perfect photo spot or need help planning your session route?",
-    "title": "ClickTale AI Guide",
+    "greeting": "Hi! I'm Lina, your photographer here in Santorini. What are you planning - couples session, family photos, or something else?",
+    "title": "Chat with Lina",
     "status": "Online",
-    "placeholder": "Ask about photo spots...",
+    "placeholder": "Type your message here...",
     "send": "Send message",
     "open": "Open assistant",
     "close": "Close assistant",
