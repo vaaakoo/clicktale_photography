@@ -159,7 +159,7 @@ export const Navbar: React.FC = () => {
         className={`fixed inset-0 z-50 md:hidden ${isMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
       >
         <div
-          className={`absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity duration-500 ${
+          className={`absolute inset-0 z-0 bg-black/40 backdrop-blur-md transition-opacity duration-500 ${
             isMenuOpen ? 'opacity-100' : 'opacity-0'
           }`}
           onClick={() => setIsMenuOpen(false)}
@@ -169,7 +169,7 @@ export const Navbar: React.FC = () => {
         <nav
           id="mobile-nav"
           ref={menuRef}
-          className={`absolute right-0 top-0 flex h-full w-full max-w-full flex-col gap-10 bg-white dark:bg-[#0e1622] p-8 shadow-2xl transition-transform duration-500 ${
+          className={`absolute right-0 top-0 z-10 flex h-full w-full max-w-full flex-col gap-10 bg-white dark:bg-[#0e1622] p-8 shadow-2xl transition-transform duration-500 ${
             isMenuOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
           aria-label={t('nav.mobileNavigation')}
