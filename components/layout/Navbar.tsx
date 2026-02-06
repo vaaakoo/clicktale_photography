@@ -156,12 +156,12 @@ export const Navbar: React.FC = () => {
       </div>
 
       <div
-        className={`fixed inset-0 z-50 transition-all duration-500 md:hidden ${
-          isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
+        className={`fixed inset-0 z-50 md:hidden ${isMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
       >
         <div
-          className="absolute inset-0 bg-black/40 backdrop-blur-md"
+          className={`absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity duration-500 ${
+            isMenuOpen ? 'opacity-100' : 'opacity-0'
+          }`}
           onClick={() => setIsMenuOpen(false)}
           aria-hidden="true"
         />
