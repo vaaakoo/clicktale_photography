@@ -6,6 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config();
 dotenv.config({ path: path.join(__dirname, '.env.local') });
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 // Verify environment variables are loaded
 console.log('EMAIL_USER loaded:', process.env.EMAIL_USER ? '✓' : '✗');
 console.log('EMAIL_PASSWORD loaded:', process.env.EMAIL_PASSWORD ? '✓' : '✗');
+console.log('RECAPTCHA_SECRET_KEY loaded:', process.env.RECAPTCHA_SECRET_KEY ? '✓' : '✗');
 
 // Health check endpoint
 app.get('/', (req, res) => {
@@ -84,7 +86,10 @@ const verifyRecaptcha = async (token) => {
   });
 
   const data = await response.json();
-  return data.success === true;
+  if (!data.success) {
+    console.error('❌ reCAPTCHA verification failed:', data['error-codes']);
+  }
+  return { success: data.success === true, errorCodes: data['error-codes'] ?? [] };
 };
 
 // Booking endpoint
@@ -293,8 +298,11 @@ app.post('/api/send-booking', async (req, res) => {
 
     const isHuman = await verifyRecaptcha(captchaToken);
 
-    if (!isHuman) {
-      return res.status(403).json({ error: 'Captcha verification failed' });
+    if (!recaptchaResult.success) {
+      return res.status(403).json({
+        error: 'Captcha verification failed',
+        errorCodes: recaptchaResult.errorCodes,
+      });
     }
 
     console.log('Sending admin email to:', adminMailOptions.to);
