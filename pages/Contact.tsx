@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 export const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -9,20 +9,65 @@ export const Contact: React.FC = () => {
     message: '',
   });
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const recaptchaContainerRef = useRef<HTMLDivElement | null>(null);
+  const recaptchaWidgetId = useRef<number | null>(null);
+  const resolvedRecaptchaSiteKey = (import.meta as any).env?.VITE_RECAPTCHA_SITE_KEY
+    ?? (import.meta as any).env?.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+    ?? '';
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const resetRecaptcha = () => {
+    setCaptchaToken(null);
+    if (typeof window !== 'undefined' && (window as any).grecaptcha?.reset && recaptchaWidgetId.current !== null) {
+      (window as any).grecaptcha.reset(recaptchaWidgetId.current);
+    }
+  };
+
+  const renderRecaptcha = () => {
+    if (!recaptchaContainerRef.current || !resolvedRecaptchaSiteKey) {
+      return;
+    }
+    if (typeof window === 'undefined' || !(window as any).grecaptcha?.render) {
+      return;
+    }
+    if (recaptchaWidgetId.current !== null) {
+      (window as any).grecaptcha.reset(recaptchaWidgetId.current);
+      return;
+    }
+
+    recaptchaWidgetId.current = (window as any).grecaptcha.render(recaptchaContainerRef.current, {
+      sitekey: resolvedRecaptchaSiteKey,
+      callback: (token: string) => {
+        setCaptchaToken(token);
+        setSubmitStatus(null);
+      },
+      'expired-callback': () => {
+        resetRecaptcha();
+        setSubmitStatus({
+          type: 'error',
+          message: 'Security check expired. Please try again.',
+        });
+      },
+      'error-callback': () => {
+        resetRecaptcha();
+        setSubmitStatus({
+          type: 'error',
+          message: 'Security check failed. Please refresh and try again.',
+        });
+      },
+    });
+  };
+
   useEffect(() => {
-  (window as any).onTurnstileSuccess = (token: string) => {
-    setCaptchaToken(token);
+    (window as any).onRecaptchaLoad = () => {
+      renderRecaptcha();
+    };
+    renderRecaptcha();
 
-    // 🔑 clear previous "not a robot" error
-    setSubmitStatus(null);
-  };
-
-  return () => {
-    delete (window as any).onTurnstileSuccess;
-  };
-}, []);
+    return () => {
+      delete (window as any).onRecaptchaLoad;
+    };
+  }, [resolvedRecaptchaSiteKey]);
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -38,6 +83,14 @@ export const Contact: React.FC = () => {
     setIsSubmitting(true);
     setSubmitStatus(null);
 
+    if (!resolvedRecaptchaSiteKey) {
+      setSubmitStatus({
+        type: 'error',
+        message: 'Security check unavailable. Please contact support.',
+      });
+      setIsSubmitting(false);
+      return;
+    }
     if (!captchaToken) {
       setSubmitStatus({
         type: 'error',
@@ -64,11 +117,16 @@ export const Contact: React.FC = () => {
       if (response.ok) {
         setSubmitStatus({ type: 'success', message: 'Booking request sent! Check your email for confirmation.' });
         setFormData({ name: '', email: '', date: '', message: '' });
+        resetRecaptcha();
       } else {
         setSubmitStatus({ type: 'error', message: data.error || 'Failed to send booking. Please try again.' });
+        if (data?.error?.toLowerCase?.().includes('captcha')) {
+          resetRecaptcha();
+        }
       }
     } catch (error) {
       setSubmitStatus({ type: 'error', message: 'Network error. Please check if the server is running.' });
+      resetRecaptcha();
     } finally {
       setIsSubmitting(false);
     }
@@ -198,7 +256,12 @@ export const Contact: React.FC = () => {
                 placeholder="Tell me what you are looking for..."
               />
             </div>
-            {!captchaToken && (
+            {!resolvedRecaptchaSiteKey && (
+              <div className="flex items-center gap-2 text-xs text-red-500">
+                Security check unavailable. Please contact support.
+              </div>
+            )}
+            {!captchaToken && resolvedRecaptchaSiteKey && (
                 <div className="flex items-center gap-2 text-xs text-gray-500">
                   <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
@@ -207,12 +270,7 @@ export const Contact: React.FC = () => {
                 </div>
               )}
 
-            <div
-              className="cf-turnstile"
-              data-sitekey="0x4AAAAAACQkiCrOWu32m6v-"
-              data-callback="onTurnstileSuccess"
-              data-theme="light"
-            ></div>
+            <div ref={recaptchaContainerRef}></div>
 
             <button 
               type="submit"
